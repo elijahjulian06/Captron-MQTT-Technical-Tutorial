@@ -1,0 +1,56 @@
+services:
+  mosquitto:
+    container_name: mosquitto
+    image: eclipse-mosquitto:latest
+    restart: always
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+    ports:
+      - "1883:1883"
+      - "9001:9001"
+    volumes:
+      - "/home/ejulian/Desktop/Captron-Technical-Tutorial-Repository/mqtt-demo-files/mosquitto.conf:/mosquitto/config/mosquitto.conf"
+      - "/home/ejulian/Desktop/Captron-Technical-Tutorial-Repository/mqtt-demo-files/mosquitto-data:/mosquitto/data"
+      - "/home/ejulian/Desktop/Captron-Technical-Tutorial-Repository/mqtt-demo-files/mosquitto-log:/mosquitto/log"
+      
+  nodered:
+    container_name: nodered
+    image: nodered/node-red
+    restart: always
+    volumes:
+      - "/home/ejulian/Desktop/Captron-Technical-Tutorial-Repository/mqtt-demo-files/node-red-data:/data"
+    ports:
+      - "1880:1880"
+
+  influxdb:
+    container_name: influxdb
+    image: influxdb:latest
+    ports: 
+      - "8086:8086"
+    volumes: 
+      - "/home/ejulian/Desktop/Captron-Technical-Tutorial-Repository/mqtt-demo-files:/var/lib/influxdb"
+    environment:
+      INFLUXDB_DB: CaptronProcessData
+      INFLUXDB_ADMIN_USER: admin
+      INFLUXDB_ADMIN_PASSWORD: admin
+      INFLUXDB_USER: user
+      INFLUXDB_PASSWORD: user
+      DOCKER_INFLUXDB_INIT_RETENTION: 12h
+    restart: unless-stopped
+  
+  grafana:
+    image: grafana/grafana
+    container_name: grafana
+    restart: always
+    ports:
+      - "3000:3000"
+    volumes:
+      - grafana-storage:/var/lib/grafana
+networks:
+  mqtt-network:
+
+volumes:
+  grafana-storage: {}
+
