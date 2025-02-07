@@ -39,15 +39,7 @@ services:
       INFLUXDB_PASSWORD: user
       DOCKER_INFLUXDB_INIT_RETENTION: 12h
     restart: unless-stopped
-  
-  grafana:
-    image: grafana/grafana
-    container_name: grafana
-    restart: always
-    ports:
-      - "3000:3000"
-    volumes:
-      - grafana-storage:/var/lib/grafana
+
 networks:
   mqtt-network:
 
